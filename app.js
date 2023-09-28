@@ -1,7 +1,16 @@
-const mainApp= require("express")()
+
+const express= require("express")
+const mainApp= express()
+
+// const express = require("express")
+// const app = express();
+
+mainApp.use(express.json());
+mainApp.use(express.urlencoded({extended:true}))
 
 // const {sayHelloDB} = require("./database/databaseConnection")
-const { connectDatabase } = require("./database/databaseConnection")
+const { connectDatabase } = require("./database/databaseConnection");
+const Blog = require("./model/blogModel");
 // const databaseObject= require("./database/databaseConnection")
 
 
@@ -25,6 +34,24 @@ connectDatabase()
 // console.log("Database Connected from app.js")
 // })
 
+mainApp.post("/createBlog", async(req,res)=>{
+console.log(req.body)
+    
+
+//Insert to DB logic goes here
+ await Blog.create({
+
+    title:req.body.title,
+    subTitle:req.body.subTitle,
+    description:req.body.description
+ })
+
+res.json({
+    status:200,
+    message:"Success"
+})
+})
+
 
 mainApp.get("/",(req,res)=>{
     res.json({
@@ -32,8 +59,6 @@ mainApp.get("/",(req,res)=>{
         message: "Success"
     })
 })
-
-
 
 
 mainApp.listen(2000,()=>{
